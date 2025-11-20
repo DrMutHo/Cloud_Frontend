@@ -8,14 +8,42 @@ import {
     LogOut,
     Settings,
     ChevronRight,
-    Menu
+    Menu,
+    Loader2
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { signOut } from 'aws-amplify/auth';
+import { toast } from 'sonner';
 
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(true);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const pathname = usePathname();
+    const router = useRouter();
+
+    if (pathname === '/login' || pathname === '/register') {
+        return null;
+    }
+
+    const handleLogout = async () => {
+        try {
+            setIsLoggingOut(true);
+
+            await signOut();
+
+            toast.success("Đăng xuất thành công", {
+                description: "Hẹn gặp lại bạn!",
+            });
+
+            router.push('/login');
+        } catch (error) {
+            console.error("Lỗi đăng xuất:", error);
+            toast.error("Đăng xuất thất bại");
+        } finally {
+            setIsLoggingOut(false);
+        }
+    };
 
     return (
         <aside
@@ -67,12 +95,20 @@ export default function Sidebar() {
                     isActive={pathname === '/settings'}
                     collapsed={!isOpen}
                 />
+
                 <button
-                    className={`flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors text-red-600 hover:bg-red-50`}
+                    onClick={handleLogout}
+                    disabled={isLoggingOut}
+                    className={`flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors text-red-600 hover:bg-red-50 disabled:opacity-50`}
                     title={!isOpen ? "Đăng xuất" : ""}
                 >
-                    <LogOut className="h-5 w-5" />
-                    {isOpen && <span>Đăng xuất</span>}
+                    {isLoggingOut ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                        <LogOut className="h-5 w-5" />
+                    )}
+
+                    {isOpen && <span>{isLoggingOut ? "Đang thoát..." : "Đăng xuất"}</span>}
                 </button>
             </div>
         </aside>

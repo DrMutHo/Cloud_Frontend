@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
+import ConfigureAmplifyClient from "@/components/ConfigureAmplifyClient";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-slate-50 text-slate-900 flex`}>
+        <ConfigureAmplifyClient />
+
         <Sidebar />
 
         <main className="flex-1 h-screen overflow-y-auto p-4 md:p-8">
@@ -25,6 +29,7 @@ export default function RootLayout({
             {children}
           </div>
         </main>
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );
