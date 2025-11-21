@@ -4,9 +4,7 @@ import React, { useState } from 'react';
 import {
     LayoutDashboard,
     CloudUpload,
-    FileText,
     LogOut,
-    Settings,
     ChevronRight,
     Menu,
     Loader2
@@ -39,26 +37,23 @@ export default function Sidebar() {
             router.push('/login');
         } catch (error) {
             console.error("Lỗi đăng xuất:", error);
-            toast.error("Đăng xuất thất bại");
+            toast.error("Đăng xuất thất bại", {
+                description: "Vui lòng thử lại sau."
+            });
         } finally {
             setIsLoggingOut(false);
         }
     };
 
     return (
-        <aside
-            className={`${isOpen ? 'w-64' : 'w-16'} transition-all duration-300 flex flex-col border-r border-slate-200 bg-white h-screen sticky top-0 left-0 z-50`}
-        >
+        <aside className={`${isOpen ? 'w-64' : 'w-16'} transition-all duration-300 flex flex-col border-r border-slate-200 bg-white h-screen sticky top-0 left-0 z-50`}>
             <div className="h-14 flex items-center justify-between px-4 border-b border-slate-100">
                 {isOpen && (
                     <span className="font-bold text-lg tracking-tight text-slate-800">
-                        CloudAnalyze<span className="text-blue-600">.ai</span>
+                        VerbalSentiment<span className="text-blue-600">.ai</span>
                     </span>
                 )}
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="p-1 hover:bg-slate-100 rounded text-slate-600"
-                >
+                <button onClick={() => setIsOpen(!isOpen)} className="p-1 hover:bg-slate-100 rounded text-slate-600">
                     {isOpen ? <ChevronRight className="h-4 w-4 rotate-180" /> : <Menu className="h-4 w-4" />}
                 </button>
             </div>
@@ -78,24 +73,9 @@ export default function Sidebar() {
                     isActive={pathname === '/upload'}
                     collapsed={!isOpen}
                 />
-                <NavItem
-                    href="/reports"
-                    icon={<FileText />}
-                    label="Báo cáo"
-                    isActive={pathname === '/reports'}
-                    collapsed={!isOpen}
-                />
             </nav>
 
             <div className="p-2 border-t border-slate-100 mb-2">
-                <NavItem
-                    href="/settings"
-                    icon={<Settings />}
-                    label="Cấu hình"
-                    isActive={pathname === '/settings'}
-                    collapsed={!isOpen}
-                />
-
                 <button
                     onClick={handleLogout}
                     disabled={isLoggingOut}
@@ -115,7 +95,7 @@ export default function Sidebar() {
     );
 }
 
-function NavItem({ href, icon, label, isActive, collapsed, variant = 'default' }: any) {
+function NavItem({ href, icon, label, isActive, collapsed }: any) {
     return (
         <Link
             href={href}
